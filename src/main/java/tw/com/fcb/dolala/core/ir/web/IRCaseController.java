@@ -14,7 +14,7 @@ import tw.com.fcb.dolala.core.ir.service.IRCaseService;
 import tw.com.fcb.dolala.core.ir.service.IRService;
 import tw.com.fcb.dolala.core.ir.web.cmd.SwiftMessageSaveCmd;
 import tw.com.fcb.dolala.core.ir.web.dto.IRCaseDto;
-import tw.com.fcb.dolala.core.ir.web.mapper.IRCaseDtoMapper;
+import tw.com.fcb.dolala.core.ir.web.mapper.IRCaseMapper;
 
 import javax.validation.constraints.NotNull;
 
@@ -41,7 +41,7 @@ public class IRCaseController {
 	@Autowired
 	AutoPassCheckService autoPassCheckService;
 	@Autowired
-	IRCaseDtoMapper dtoMapper;
+    IRCaseMapper dtoMapper;
 
 	@Autowired
 	IRService irService;

@@ -12,7 +12,7 @@ import tw.com.fcb.dolala.core.ir.web.dto.IRCaseDto;
  * Description: IRCaseToDtoMapper
  */
 @Mapper
-public interface IRCaseDtoMapper {
+public interface IRCaseMapper {
 
     IRCaseDto toIRCaseDto(SwiftMessageSaveCmd saveCmd);
 
