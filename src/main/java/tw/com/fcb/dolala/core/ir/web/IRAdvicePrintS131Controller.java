@@ -1,21 +1,20 @@
 package tw.com.fcb.dolala.core.ir.web;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import io.swagger.v3.oas.annotations.Operation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import io.swagger.v3.oas.annotations.Operation;
-import lombok.extern.slf4j.Slf4j;
 import tw.com.fcb.dolala.core.common.http.Response;
-import tw.com.fcb.dolala.core.ir.http.CommonFeignClient;
+import tw.com.fcb.dolala.core.common.web.CommonFeignClient;
 import tw.com.fcb.dolala.core.ir.service.IRService;
 import tw.com.fcb.dolala.core.ir.web.dto.IRAdvicePrintListDto;
 import tw.com.fcb.dolala.core.ir.web.dto.IRDto;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author ijoshua29
@@ -29,7 +28,7 @@ public class IRAdvicePrintS131Controller {
 	@Autowired
 	IRService irService;
 	@Autowired
-    CommonFeignClient commonFeignClient;
+	CommonFeignClient commonFeignClient;
 	
 	// ※※※ S131 API清單 ※※※
 	// S131R 「處理種類」為(0、1、2、7或8) 之發查電文。 ==>進行通知書列印(多筆)

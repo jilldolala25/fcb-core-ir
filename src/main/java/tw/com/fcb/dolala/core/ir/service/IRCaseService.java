@@ -2,10 +2,12 @@ package tw.com.fcb.dolala.core.ir.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tw.com.fcb.dolala.core.common.web.CommonFeignClient;
+import tw.com.fcb.dolala.core.common.web.dto.BankDto;
+import tw.com.fcb.dolala.core.common.web.dto.CustomerDto;
 import tw.com.fcb.dolala.core.ir.repository.IRCaseRepository;
 import tw.com.fcb.dolala.core.ir.repository.IRMasterRepository;
 import tw.com.fcb.dolala.core.ir.repository.entity.IRCaseEntity;
@@ -101,7 +103,7 @@ public class IRCaseService {
         String accountNo = irMessageCheckSerivce.getAccountNo(irCaseDto.getReceiverAccount());
         irCaseDto.setReceiverAccount(accountNo);
         //顧客資料，受通知分行
-        CustomerDto customer = commonFeignClient.getCustomer(irCaseDto.getReceiverAccount());
+        CustomerDto customer = commonFeignClient.getCustomer(irCaseDto.getReceiverAccount()).getData();
         if (customer == null){
             throw new Exception("DZZZ:查不到客戶");
         }

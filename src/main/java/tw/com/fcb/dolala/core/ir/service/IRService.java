@@ -1,26 +1,22 @@
 package tw.com.fcb.dolala.core.ir.service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import tw.com.fcb.dolala.core.common.repository.entity.ExchgRate;
+import tw.com.fcb.dolala.core.common.web.CommonFeignClient;
 import tw.com.fcb.dolala.core.common.web.dto.CustomerDto;
-import tw.com.fcb.dolala.core.ir.http.CommonFeignClient;
 import tw.com.fcb.dolala.core.ir.repository.IRMasterRepository;
-
 import tw.com.fcb.dolala.core.ir.repository.entity.IRMaster;
-
 import tw.com.fcb.dolala.core.ir.web.cmd.IRSaveCmd;
 import tw.com.fcb.dolala.core.ir.web.dto.IRAdvicePrintListDto;
 import tw.com.fcb.dolala.core.ir.web.dto.IRCaseDto;
 import tw.com.fcb.dolala.core.ir.web.dto.IRDto;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -50,7 +46,7 @@ public class IRService {
 
 		// 自動將saveCmd的屬性，對應到entity裡
 		BeanUtils.copyProperties(irSaveCmd, irMaster);
-		irMaster.setExchangeRate(commonFeignClient.getFxRate(ExchgRate.EXCHG_RATE_TYPE_BUY, irSaveCmd.getCurrency(),"TWD"));
+		irMaster.setExchangeRate(commonFeignClient.isGetFxRate("B", irSaveCmd.getCurrency(),"TWD"));
 		//取號
 		irMaster.setIrNo(commonFeignClient.getFxNo(noCode,systemType,irSaveCmd.getBeAdvBranch()));
 		if (irMaster.getIrNo() != null){
@@ -142,7 +138,7 @@ public class IRService {
 
 	// set IRMaster相關欄位資料
 	public IRSaveCmd setIRMaster(IRSaveCmd irSaveCmd){
-		CustomerDto customer = commonFeignClient.getCustomer(irSaveCmd.getReceiverAccount());		//初始值 0
+		CustomerDto customer = commonFeignClient.getCustomer(irSaveCmd.getReceiverAccount()).getData();		//初始值 0
 		irSaveCmd.setPaidStats(0);
 		//印製通知書記號
 		irSaveCmd.setPrintAdvMk("N");
@@ -235,9 +231,9 @@ public class IRService {
 			BeanUtils.copyProperties(irSaveCmd, irMaster);
 			irMaster.setPaidStats(4); // 4:已解款
 			//取得賣匯匯率
-			irMaster.setExchangeRate(commonFeignClient.getFxRate("S", irMaster.getCurrency(), "TWD"));
+			irMaster.setExchangeRate(commonFeignClient.isGetFxRate("S", irMaster.getCurrency(), "TWD"));
 			//取得對美元匯率
-			irMaster.setExchangeRate(commonFeignClient.getFxRate("S", "USD", "TWD"));
+			irMaster.setExchangeRate(commonFeignClient.isGetFxRate("S", "USD", "TWD"));
 			//取得匯款行名稱地址
 			irMaster.setRemitBkName1(commonFeignClient.getBank(irMaster.getRemitBank()).getName());
 			irMaster.setRemitBkName2(commonFeignClient.getBank(irMaster.getRemitBank()).getAddress());

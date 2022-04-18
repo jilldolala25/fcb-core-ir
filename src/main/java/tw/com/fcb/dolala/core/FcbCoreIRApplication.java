@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
-@EnableFeignClients(basePackages = "tw.com.fcb.dolala.core.common")
+@EnableFeignClients
 public class FcbCoreIRApplication {
 
 	public static void main(String[] args) {

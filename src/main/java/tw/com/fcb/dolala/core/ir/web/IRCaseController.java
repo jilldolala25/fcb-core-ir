@@ -4,20 +4,17 @@ import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.info.Info;
 import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import tw.com.fcb.dolala.core.common.http.Response;
-import tw.com.fcb.dolala.core.ir.http.CommonFeignClient;
-import tw.com.fcb.dolala.core.ir.repository.entity.IRMaster;
+import tw.com.fcb.dolala.core.common.web.CommonFeignClient;
 import tw.com.fcb.dolala.core.ir.service.AutoPassCheckService;
 import tw.com.fcb.dolala.core.ir.service.IRCaseService;
 import tw.com.fcb.dolala.core.ir.service.IRService;
 import tw.com.fcb.dolala.core.ir.web.cmd.SwiftMessageSaveCmd;
 import tw.com.fcb.dolala.core.ir.web.dto.IRCaseDto;
-import tw.com.fcb.dolala.core.ir.web.dto.IRDto;
+import tw.com.fcb.dolala.core.ir.web.mapper.IRCaseDtoMapper;
 
 import javax.validation.constraints.NotNull;
 
@@ -40,9 +37,11 @@ public class IRCaseController {
     @Autowired
     IRCaseService irCaseService;
     @Autowired
-    CommonFeignClient commonFeignClient;
+	CommonFeignClient commonFeignClient;
 	@Autowired
 	AutoPassCheckService autoPassCheckService;
+	@Autowired
+	IRCaseDtoMapper dtoMapper;
 
 	@Autowired
 	IRService irService;
@@ -53,8 +52,9 @@ public class IRCaseController {
 		Response<String> response = new Response();
 		String insertIRCaseResult;
 		try {
-			IRCaseDto irCaseDto = new IRCaseDto();
-			BeanUtils.copyProperties(message, irCaseDto);
+//			IRCaseDto irCaseDto = new IRCaseDto();
+//			BeanUtils.copyProperties(message, irCaseDto);
+			IRCaseDto irCaseDto = dtoMapper.toIRCaseDto(message);
 			//insert，將電文資料新增至IRCase檔案
 			insertIRCaseResult = irCaseService.irCaseInsert(irCaseDto);
 

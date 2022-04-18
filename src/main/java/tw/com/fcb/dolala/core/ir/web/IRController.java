@@ -1,13 +1,12 @@
 package tw.com.fcb.dolala.core.ir.web;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import io.swagger.v3.oas.annotations.Operation;
 import tw.com.fcb.dolala.core.common.http.Response;
-import tw.com.fcb.dolala.core.ir.http.CommonFeignClient;
+import tw.com.fcb.dolala.core.common.web.CommonFeignClient;
 import tw.com.fcb.dolala.core.ir.repository.entity.IRMaster;
 import tw.com.fcb.dolala.core.ir.service.IRService;
 import tw.com.fcb.dolala.core.ir.web.cmd.IRSaveCmd;
@@ -28,7 +27,7 @@ public class IRController {
 	@Autowired
 	IRService irService;
     @Autowired
-     CommonFeignClient commonFeignClient;
+    CommonFeignClient commonFeignClient;
 
 
     @PostMapping("/irmaster/insert")

@@ -68,6 +68,11 @@
 			<version>3.1.1</version>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-loadbalancer</artifactId>
+			<version>3.1.1</version>
+	</dependency>
+		<dependency>
 			<groupId>org.hibernate.validator</groupId>
 			<artifactId>hibernate-validator</artifactId>
 		</dependency>
@@ -80,14 +85,23 @@
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-jsr310</artifactId>
 		</dependency>
+
 		<dependency>
-			<groupId>tw.com.fcb.dolala.core</groupId>
-			<artifactId>inward-remittance</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<groupId>org.xmlunit</groupId>
+			<artifactId>xmlunit-core</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>tw.com.fcb.dolala.core</groupId>
-			<artifactId>common</artifactId>
+			<groupId>org.xmlunit</groupId>
+			<artifactId>xmlunit-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
+			<version>1.4.2.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>tw.com.fcb.dolala.core.api</groupId>
+			<artifactId>common-api</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>

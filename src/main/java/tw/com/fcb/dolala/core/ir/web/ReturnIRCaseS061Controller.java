@@ -1,16 +1,11 @@
 package tw.com.fcb.dolala.core.ir.web;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 import tw.com.fcb.dolala.core.common.http.Response;
-import tw.com.fcb.dolala.core.ir.http.CommonFeignClient;
+import tw.com.fcb.dolala.core.common.web.CommonFeignClient;
 import tw.com.fcb.dolala.core.ir.service.IRCaseService;
 import tw.com.fcb.dolala.core.ir.web.dto.IRCaseDto;
 
@@ -26,7 +21,7 @@ public class ReturnIRCaseS061Controller {
 	@Autowired
 	IRCaseService S061;
 	@Autowired
-    CommonFeignClient commonFeignClient;
+	CommonFeignClient commonFeignClient;
 	
 	// ※※※ S061 API清單 ※※※
 	// S061A	退匯(無匯入編號) (A)

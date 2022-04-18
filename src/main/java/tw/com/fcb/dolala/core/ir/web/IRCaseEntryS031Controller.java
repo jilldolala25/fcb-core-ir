@@ -1,15 +1,14 @@
 package tw.com.fcb.dolala.core.ir.web;
 
+import io.swagger.v3.oas.annotations.Operation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import io.swagger.v3.oas.annotations.Operation;
-import lombok.extern.slf4j.Slf4j;
 import tw.com.fcb.dolala.core.common.http.Response;
-import tw.com.fcb.dolala.core.ir.http.CommonFeignClient;
+import tw.com.fcb.dolala.core.common.web.CommonFeignClient;
 import tw.com.fcb.dolala.core.ir.service.IRCaseService;
 import tw.com.fcb.dolala.core.ir.web.dto.IRCaseDto;
 
@@ -25,7 +24,7 @@ public class IRCaseEntryS031Controller {
 	@Autowired
 	IRCaseService S031;
 	@Autowired
-    CommonFeignClient commonFeignClient;
+	CommonFeignClient commonFeignClient;
 	
 	// ※※※ S031 API清單 ※※※
 	// S031A 執行匯款資料新增 (A:新增/T:複製電文)
