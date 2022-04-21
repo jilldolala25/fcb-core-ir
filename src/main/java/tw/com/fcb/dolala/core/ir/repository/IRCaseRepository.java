@@ -19,8 +19,8 @@ import java.util.Optional;
 @Repository
 public interface IRCaseRepository extends JpaRepository<IRCaseEntity, Long> {
 
-	Optional<IRCaseEntity> findBySeqNo(String irSeqNo);
+    Optional<IRCaseEntity> findBySeqNo(String irSeqNo);
 
-	Optional<IRCaseEntity> findBySeqNoAndProcessStatus(String seqNo, String processStatus);
+    Optional<IRCaseEntity> findBySeqNoAndProcessStatus(String seqNo, String processStatus);
 
 }

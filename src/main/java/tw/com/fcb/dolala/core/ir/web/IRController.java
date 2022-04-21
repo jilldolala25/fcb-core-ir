@@ -24,14 +24,14 @@ import tw.com.fcb.dolala.core.ir.web.dto.IRDto;
 @RequestMapping("/ir")
 public class IRController {
 
-	@Autowired
-	IRService irService;
+    @Autowired
+    IRService irService;
     @Autowired
     CommonFeignClient commonFeignClient;
 
 
     @PostMapping("/irmaster/insert")
-    @Operation(description = "匯入匯款主檔資料寫入", summary="新增匯入匯款主檔")
+    @Operation(description = "匯入匯款主檔資料寫入", summary = "新增匯入匯款主檔")
     public Response<IRMaster> irMasterInsert(@Validated @RequestBody IRSaveCmd irSaveCmd) {
         Response<IRMaster> response = new Response<IRMaster>();
 
@@ -42,27 +42,28 @@ public class IRController {
             response.setData(irMaster);
             log.info("呼叫新增匯入匯款主檔API：新增一筆主檔資料");
         } catch (Exception e) {
-           response.Error(e.getMessage(),commonFeignClient.getErrorMessage(e.getMessage()));
-           log.info("呼叫新增匯入匯款主檔API：" + commonFeignClient.getErrorMessage(e.getMessage()));
+            response.Error(e.getMessage(), commonFeignClient.getErrorMessage(e.getMessage()));
+            log.info("呼叫新增匯入匯款主檔API：" + commonFeignClient.getErrorMessage(e.getMessage()));
         }
         return response;
     }
 
     @GetMapping("/irmaster/{branch}/count")
-    @Operation(description = "傳入受通知單位查詢案件數", summary="查詢匯入案件數")
+    @Operation(description = "傳入受通知單位查詢案件數", summary = "查詢匯入案件數")
     public Response<Integer> getCount(@PathVariable("branch") String branch) {
         Response<Integer> response = new Response<Integer>();
         try {
-        	Integer count = irService.getIrCaseCount(branch);
+            Integer count = irService.getIrCaseCount(branch);
             response.Success();
             response.setData(count);
             log.info("呼叫查詢匯入案件數API：" + branch + "分行匯入案件數=" + count);
-        }catch(Exception e){
-            response.Error(e.getMessage(),commonFeignClient.getErrorMessage(e.getMessage()));
+        } catch (Exception e) {
+            response.Error(e.getMessage(), commonFeignClient.getErrorMessage(e.getMessage()));
             log.info("呼叫查詢匯入案件數API：" + commonFeignClient.getErrorMessage(e.getMessage()));
         }
-        return  response;
+        return response;
     }
+
     @GetMapping("/irmaster/{irNo}/")
     @Operation(description = "查詢匯入匯款主檔資料", summary = "查詢匯入匯款主檔資料")
     public Response<IRDto> getIRMasterByIrNo(@PathVariable("irNo") String irNo) {
@@ -79,7 +80,7 @@ public class IRController {
             } else if ("5".equals(irDto.getPaidStats().toString())) {
                 response.Error("S103", commonFeignClient.getErrorMessage("S103"));
                 log.info("呼叫查詢匯入匯款案件API：查詢匯入匯款編號" + irNo + "已退匯");
-            } else{
+            } else {
                 log.info("呼叫查詢匯入匯款案件API：查詢匯入匯款編號" + irNo + ",狀態 = " + irDto.getPaidStats());
             }
         } catch (Exception e) {
@@ -88,49 +89,50 @@ public class IRController {
         }
         return response;
     }
+
     @GetMapping("/irmaster/{irNo}/enquiry")
-    @Operation(description = "傳入匯入匯款編號查詢案件明細", summary="查詢匯入案件明細")
+    @Operation(description = "傳入匯入匯款編號查詢案件明細", summary = "查詢匯入案件明細")
     public Response<IRDto> getByIrNo(@PathVariable("irNo") String irNo) {
         Response<IRDto> response = new Response<IRDto>();
         try {
             response.Success();
             response.setData(irService.findOne(irNo));
             log.info("呼叫查詢匯入匯款編號案件API：查詢irNo編號-AFTER" + irNo);
-        }catch(Exception e){
-            response.Error(e.getMessage(),commonFeignClient.getErrorMessage(e.getMessage()));
+        } catch (Exception e) {
+            response.Error(e.getMessage(), commonFeignClient.getErrorMessage(e.getMessage()));
             log.info("呼叫查詢匯入匯款編號案件API：" + commonFeignClient.getErrorMessage(e.getMessage()));
         }
-        return  response;
+        return response;
     }
 
 
     @PutMapping("/irmaster/{irNo}/advice-print")
-    @Operation(description = "變更印製通知書記號", summary="印製通知書記號")
+    @Operation(description = "變更印製通知書記號", summary = "印製通知書記號")
     public Response<?> print(@PathVariable("irNo") String irNo) {
         Response<?> response = new Response<>();
-    	try {
+        try {
             irService.print(irNo);
             response.Success();
             log.info("呼叫變更印製通知書記號API：irNo編號" + irNo + "通知書印製成功，更新記號為Y");
-        }catch(Exception e){
-            response.Error(e.getMessage(),commonFeignClient.getErrorMessage(e.getMessage()));
+        } catch (Exception e) {
+            response.Error(e.getMessage(), commonFeignClient.getErrorMessage(e.getMessage()));
             log.info("呼叫變更印製通知書記號API：" + commonFeignClient.getErrorMessage(e.getMessage()));
         }
-        return  response;
+        return response;
     }
 
     @PutMapping("/irmaster/{irNo}/settle")
-    @Operation(description = "變更付款狀態", summary="付款狀態")
+    @Operation(description = "變更付款狀態", summary = "付款狀態")
     public Response<?> settle(@PathVariable("irNo") String irNo) {
-    	Response<?> response = new Response<>();
-    	try {
-			irService.settle(irNo);
-			response.Success();
-			log.info("呼叫變更付款狀態API：irNo編號" + irNo + "付款狀態變更為已解款");
-		} catch (Exception e) {
-			response.Error(e.getMessage(),commonFeignClient.getErrorMessage(e.getMessage()));
-			log.info("呼叫變更付款狀態API：" + commonFeignClient.getErrorMessage(e.getMessage()));
-		}
-    	return  response;
+        Response<?> response = new Response<>();
+        try {
+            irService.settle(irNo);
+            response.Success();
+            log.info("呼叫變更付款狀態API：irNo編號" + irNo + "付款狀態變更為已解款");
+        } catch (Exception e) {
+            response.Error(e.getMessage(), commonFeignClient.getErrorMessage(e.getMessage()));
+            log.info("呼叫變更付款狀態API：" + commonFeignClient.getErrorMessage(e.getMessage()));
+        }
+        return response;
     }
 }

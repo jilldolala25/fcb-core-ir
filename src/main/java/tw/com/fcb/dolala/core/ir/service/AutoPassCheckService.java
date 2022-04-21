@@ -17,42 +17,44 @@ import tw.com.fcb.dolala.core.ir.web.dto.IRCaseDto;
 @Slf4j
 public class AutoPassCheckService {
 
-    public String checkAutoPass(IRCaseDto irCaseDto){
+    public String checkAutoPass(IRCaseDto irCaseDto) {
         // check 相關欄位
         // update IRCaseDto
         log.info("呼叫checkAutoPassServie, check是否可自動放行");
         boolean checkBranch = this.checkBranch(irCaseDto.getBeAdvBranch());
         boolean checkCurrencyNotTWD = this.checkCurrencyNotTWD(irCaseDto.getCurrency());
         boolean checkClosed = this.checkIRClosed(irCaseDto.getProcessStatus());
-        log.debug("checkBranch = "+ checkBranch );
-        log.debug("checkCurrencyNotTWD = "+ checkCurrencyNotTWD );
-        log.debug("checkClosed = "+ checkClosed );
+        log.debug("checkBranch = " + checkBranch);
+        log.debug("checkCurrencyNotTWD = " + checkCurrencyNotTWD);
+        log.debug("checkClosed = " + checkClosed);
         if (checkBranch == true && checkCurrencyNotTWD == true && checkClosed == true) {
-            return  "Y";
-        }else{
-            return "N" ;
+            return "Y";
+        } else {
+            return "N";
         }
     }
-    public  boolean checkCurrencyNotTWD(String currency){
+
+    public boolean checkCurrencyNotTWD(String currency) {
         if (currency.equals("TWD")) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
 
-    public boolean checkBranch(String branch){
-        if (branch == null){
-            return  false;
-        }else{
-            return  true;
+    public boolean checkBranch(String branch) {
+        if (branch == null) {
+            return false;
+        } else {
+            return true;
         }
     }
-    public boolean checkIRClosed(String processStatus){
-        if (processStatus.equals("7")){
-            return  false;
-        }else{
-            return  true;
+
+    public boolean checkIRClosed(String processStatus) {
+        if (processStatus.equals("7")) {
+            return false;
+        } else {
+            return true;
         }
     }
 }

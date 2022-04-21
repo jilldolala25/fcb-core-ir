@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 @Builder
 public class IRMessageCheckSerivce {
 
-    public String  getAccountNo(String account) {
+    public String getAccountNo(String account) {
         String accountNo = "00000000000";
         if (account != null) {
             if (account.substring(0, 1).equals("/")) {
@@ -34,60 +34,61 @@ public class IRMessageCheckSerivce {
     }
 
 
-    public boolean checkAccountNo(String account){
+    public boolean checkAccountNo(String account) {
         boolean checkMK = false;
         // "/09320991111"
-        if (account.substring(0,1).equals("/")) {
+        if (account.substring(0, 1).equals("/")) {
             if (account.length() == 12) {
                 checkMK = true;
 
             } else {
                 checkMK = false;
             }
-        }else{
+        } else {
             if (account.length() == 11) {
                 checkMK = true;
 
-            } else{
+            } else {
                 checkMK = false;
+            }
         }
-    }
         return checkMK;
     }
+
     public boolean checkValueDate() {
         return true;
     }
-    
-    public  boolean checkAmount(BigDecimal amount){
+
+    public boolean checkAmount(BigDecimal amount) {
         boolean checkMK = false;
         BigDecimal zero = new BigDecimal(0);
-        if (amount.compareTo(zero)== -1){
-            checkMK =  false;
-        }else {
+        if (amount.compareTo(zero) == -1) {
+            checkMK = false;
+        } else {
             checkMK = true;
         }
-        return  checkMK;
-    }
-    
-    public boolean checkCurrency(String currency) {
-        boolean checkMK;
-        if (currency.length()> 3){
-            checkMK = false;
-        }else {
-            checkMK =  true;
-        }
-        return  checkMK;
+        return checkMK;
     }
 
-	public boolean checkChargeType(String chargeType) {
-		boolean checkMK;
-		try {
-			ChargeType.valueOf(chargeType);
-			checkMK = true;
-		} catch (Exception e) {
-			checkMK = false;
-		}
-		return checkMK;
-	}
- 
+    public boolean checkCurrency(String currency) {
+        boolean checkMK;
+        if (currency.length() > 3) {
+            checkMK = false;
+        } else {
+            checkMK = true;
+        }
+        return checkMK;
+    }
+
+    public boolean checkChargeType(String chargeType) {
+        boolean checkMK;
+        try {
+            ChargeType.valueOf(chargeType);
+            checkMK = true;
+        } catch (Exception e) {
+            checkMK = false;
+        }
+        return checkMK;
+    }
+
 }

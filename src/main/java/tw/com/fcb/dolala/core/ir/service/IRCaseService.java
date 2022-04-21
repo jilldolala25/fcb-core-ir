@@ -41,7 +41,7 @@ public class IRCaseService {
     @Autowired
     IRMessageCheckSerivce irMessageCheckSerivce;
     @Autowired
-	IRMasterRepository irMasterRepository;
+    IRMasterRepository irMasterRepository;
     @Autowired
     AutoPassCheckService autoPassCheckService;
     @Autowired
@@ -64,12 +64,12 @@ public class IRCaseService {
 
 // check 期交所案件
         boolean checkFE = this.checkFuturesExchange(irCaseDto.getReceiverAccount());
-        if (checkFE == true){
+        if (checkFE == true) {
             IRMaster irMaster = beFEAutoSettle(irCaseDto.getSeqNo());
-            log.info("期交所自動解款成功，IRCase編號：" + irCaseDto.getSeqNo() + ",IRMaster新增成功，編號："+ irMaster.getIrNo());
-            insertIRCaseResult = "期交所自動解款成功，IRCase編號：" + irCaseDto.getSeqNo() + ",IRMaster新增成功，編號："+ irMaster.getIrNo();
+            log.info("期交所自動解款成功，IRCase編號：" + irCaseDto.getSeqNo() + ",IRMaster新增成功，編號：" + irMaster.getIrNo());
+            insertIRCaseResult = "期交所自動解款成功，IRCase編號：" + irCaseDto.getSeqNo() + ",IRMaster新增成功，編號：" + irMaster.getIrNo();
             //非期交所案件，再繼續判斷是否可自動放行
-        }else{
+        } else {
             String autoPassMK = autoPassCheckService.checkAutoPass(irCaseDto);
             irCaseDto = getByIRSeqNo(irCaseDto.getSeqNo());
             irCaseDto.setAutoPassMk(autoPassMK);
@@ -77,9 +77,9 @@ public class IRCaseService {
             //可自動放行，寫入IRMaster
             if (irCaseDto.getAutoPassMk().equals("Y")) {
                 IRDto irDto = irService.autoPassInsertIRMaster(irCaseDto);
-                log.info( "IRCase檔新增成功，編號：" + irCaseDto.getSeqNo()+ ",電文可自動放行，新增IRMaster成功，編號：" + irDto.getIrNo());
-                insertIRCaseResult = "IRCase檔新增成功，編號：" + irCaseDto.getSeqNo()+ ",電文可自動放行，新增IRMaster成功，編號：" + irDto.getIrNo();
-            //不可自動放行，停留在IRCase
+                log.info("IRCase檔新增成功，編號：" + irCaseDto.getSeqNo() + ",電文可自動放行，新增IRMaster成功，編號：" + irDto.getIrNo());
+                insertIRCaseResult = "IRCase檔新增成功，編號：" + irCaseDto.getSeqNo() + ",電文可自動放行，新增IRMaster成功，編號：" + irDto.getIrNo();
+                //不可自動放行，停留在IRCase
             } else {
                 log.info("IRCase檔新增成功，編號：" + irCaseDto.getSeqNo());
                 insertIRCaseResult = "IRCase檔新增成功，編號：" + irCaseDto.getSeqNo();
@@ -104,7 +104,7 @@ public class IRCaseService {
         irCaseDto.setReceiverAccount(accountNo);
         //顧客資料，受通知分行
         CustomerDto customer = commonFeignClient.getCustomer(irCaseDto.getReceiverAccount()).getData();
-        if (customer == null){
+        if (customer == null) {
             throw new Exception("DZZZ:查不到客戶");
         }
         irCaseDto.setBeAdvBranch(customer.getBranchID());
@@ -120,23 +120,23 @@ public class IRCaseService {
         irCaseDto.setSenderInfo1(bankDto.getName());
         irCaseDto.setSenderInfo3(bankDto.getAddress());
         //讀取都市檔
-        String country = commonFeignClient.getCountryName(irCaseDto.getSenderSwiftCode().substring(4,5));
+        String country = commonFeignClient.getCountryName(irCaseDto.getSenderSwiftCode().substring(4, 5));
         //讀取存匯行關係
-        String  isCorrspondent = bankDto.getIsCorrespondent();
+        String isCorrspondent = bankDto.getIsCorrespondent();
         //取號
         String irSeqNo = commonFeignClient.getSeqNo();
         irCaseDto.setSeqNo(irSeqNo);
-        if (irCaseDto.getSeqNo()!= null){
+        if (irCaseDto.getSeqNo() != null) {
             return irCaseDto;
-        }else{
+        } else {
             throw new Exception("S105");
         }
 
     }
 
-	// 傳入seqNo編號查詢案件
-	// s121i 查詢待放行資料
-	// S061I 查詢待退匯(無匯入編號)
+    // 傳入seqNo編號查詢案件
+    // s121i 查詢待放行資料
+    // S061I 查詢待退匯(無匯入編號)
     public IRCaseDto getByIRSeqNo(String irSeqNo) throws Exception {
 
         IRCaseEntity irCaseEntity = irCaseRepository.findBySeqNo(irSeqNo).orElseThrow(() -> new Exception("S001"));
@@ -149,23 +149,24 @@ public class IRCaseService {
         return irCaseDto;
     }
 
-	// 傳入seqNo編號及處理狀態查詢電文檔案件
-	public IRCaseEntity getByIRSeqNoAndProcessStatus(String seqNo, String processStatus) throws Exception {
+    // 傳入seqNo編號及處理狀態查詢電文檔案件
+    public IRCaseEntity getByIRSeqNoAndProcessStatus(String seqNo, String processStatus) throws Exception {
 
-		IRCaseEntity irCaseEntity = irCaseRepository.findBySeqNoAndProcessStatus(seqNo, processStatus).orElseThrow(() -> new Exception("S001"));
-		return irCaseEntity;
-	}
-// check是否為期交所案件
-    public boolean checkFuturesExchange(String account){
-        if (account.equals("17140014156")|| account.equals("17140014172"))
+        IRCaseEntity irCaseEntity = irCaseRepository.findBySeqNoAndProcessStatus(seqNo, processStatus).orElseThrow(() -> new Exception("S001"));
+        return irCaseEntity;
+    }
+
+    // check是否為期交所案件
+    public boolean checkFuturesExchange(String account) {
+        if (account.equals("17140014156") || account.equals("17140014172"))
             return true;
         else {
-            return  false;
+            return false;
         }
     }
 
     // 期交所自動解款,寫入IRCase,IRMaster
-    public IRMaster  beFEAutoSettle(String irSeqNo) throws Exception {
+    public IRMaster beFEAutoSettle(String irSeqNo) throws Exception {
         IRCaseDto irCaseDto = getByIRSeqNo(irSeqNo);
         irCaseDto.setProcessStatus("7");
         irCaseDto.setCreditMK("Y");
@@ -173,7 +174,7 @@ public class IRCaseService {
 
         //自動放行新增進irMaster並更新為已入帳
         IRSaveCmd irSaveCmd = new IRSaveCmd();
-        BeanUtils.copyProperties(irCaseDto,irSaveCmd);
+        BeanUtils.copyProperties(irCaseDto, irSaveCmd);
         irSaveCmd = irService.setIRMaster(irSaveCmd);
         //期交所自動解款，PAID_STATUS = 2
         irSaveCmd.setPaidStats(2);
@@ -183,93 +184,93 @@ public class IRCaseService {
         return irMaster;
     }
 
-    public boolean updateByIRSeqNo(IRCaseDto irCaseDto) throws Exception{
+    public boolean updateByIRSeqNo(IRCaseDto irCaseDto) throws Exception {
         IRCaseEntity irCaseEntity = new IRCaseEntity();
 // 將irCaseDto，對應到entity裡
         BeanUtils.copyProperties(irCaseDto, irCaseEntity);
         irCaseRepository.save(irCaseEntity);
-        return  true;
+        return true;
     }
 
     // 查詢待處理案件
     public IRCaseDto getByIRSeqNoAndStatus(String seqNo) throws Exception {
 
-    	IRCaseDto irCaseDto = new IRCaseDto();
-    	IRCaseEntity irCaseEntity = this.getByIRSeqNoAndProcessStatus(seqNo, "1");
-    	if(irCaseEntity != null) {
-    		BeanUtils.copyProperties(irCaseEntity, irCaseDto);
-    	}
-    	return irCaseDto;
+        IRCaseDto irCaseDto = new IRCaseDto();
+        IRCaseEntity irCaseEntity = this.getByIRSeqNoAndProcessStatus(seqNo, "1");
+        if (irCaseEntity != null) {
+            BeanUtils.copyProperties(irCaseEntity, irCaseDto);
+        }
+        return irCaseDto;
     }
 
     // S061A 執行退匯
     public IRCaseDto exeReturnIRCase(String seqNo) throws Exception {
 
-    	IRCaseDto irCaseDto = new IRCaseDto();
-    	IRCaseEntity irCaseEntity = this.getByIRSeqNoAndProcessStatus(seqNo, "1");
+        IRCaseDto irCaseDto = new IRCaseDto();
+        IRCaseEntity irCaseEntity = this.getByIRSeqNoAndProcessStatus(seqNo, "1");
 
-    	if(irCaseEntity != null) {
-    		irCaseEntity.setProcessStatus("8");
-    		// 更新電文檔
-    		irCaseRepository.save(irCaseEntity);
-    		BeanUtils.copyProperties(irCaseEntity, irCaseDto);
-    	} else {
-    		// 查無此電文
-    		new Exception("S001");
-    	}
-    	return irCaseDto;
+        if (irCaseEntity != null) {
+            irCaseEntity.setProcessStatus("8");
+            // 更新電文檔
+            irCaseRepository.save(irCaseEntity);
+            BeanUtils.copyProperties(irCaseEntity, irCaseDto);
+        } else {
+            // 查無此電文
+            new Exception("S001");
+        }
+        return irCaseDto;
     }
 
-	// S061D 執行退匯刪除
-	public IRCaseDto deleteReturnIRCase(String seqNo) throws Exception {
+    // S061D 執行退匯刪除
+    public IRCaseDto deleteReturnIRCase(String seqNo) throws Exception {
 
-		IRCaseDto irCaseDto = new IRCaseDto();
-		IRCaseEntity irCaseEntity = this.getByIRSeqNoAndProcessStatus(seqNo, "8");
+        IRCaseDto irCaseDto = new IRCaseDto();
+        IRCaseEntity irCaseEntity = this.getByIRSeqNoAndProcessStatus(seqNo, "8");
 
-		if (irCaseEntity != null) {
-			irCaseEntity.setProcessStatus("1");
-			// 更新電文檔
-			irCaseRepository.save(irCaseEntity);
-			BeanUtils.copyProperties(irCaseEntity, irCaseDto);
-		} else {
-			// 查無此電文
-			new Exception("S001");
-		}
-		return irCaseDto;
-	}
+        if (irCaseEntity != null) {
+            irCaseEntity.setProcessStatus("1");
+            // 更新電文檔
+            irCaseRepository.save(irCaseEntity);
+            BeanUtils.copyProperties(irCaseEntity, irCaseDto);
+        } else {
+            // 查無此電文
+            new Exception("S001");
+        }
+        return irCaseDto;
+    }
 
- 	// S121A 執行MT103放行
-	public IRDto exeCaseAuthorization(String seqNo) throws Exception {
+    // S121A 執行MT103放行
+    public IRDto exeCaseAuthorization(String seqNo) throws Exception {
 
-		IRDto irDto = new IRDto();
-		IRMaster irMaster = null;
-		IRCaseEntity irCaseEntity = this.getByIRSeqNoAndProcessStatus(seqNo, "1");
+        IRDto irDto = new IRDto();
+        IRMaster irMaster = null;
+        IRCaseEntity irCaseEntity = this.getByIRSeqNoAndProcessStatus(seqNo, "1");
 
-		if (irCaseEntity != null) {
-			// 從電文檔搬移到主檔
-			irMaster = new IRMaster();
-			irMaster.setPaidStats(0);
-			irMaster.setValueDate(irCaseEntity.getValueDate());
-			irMaster.setIrAmount(irCaseEntity.getIrAmount());
-			irMaster.setCurrency(irCaseEntity.getCurrency());
-			irMaster.setBeAdvBranch("093");
-			irMaster.setPrintAdvMk("Y");
-			// 產生外匯編號
-			irMaster.setIrNo(commonFeignClient.getFxNo("S", "IR", "093"));
-			// 新增主檔
-			irMasterRepository.save(irMaster);
+        if (irCaseEntity != null) {
+            // 從電文檔搬移到主檔
+            irMaster = new IRMaster();
+            irMaster.setPaidStats(0);
+            irMaster.setValueDate(irCaseEntity.getValueDate());
+            irMaster.setIrAmount(irCaseEntity.getIrAmount());
+            irMaster.setCurrency(irCaseEntity.getCurrency());
+            irMaster.setBeAdvBranch("093");
+            irMaster.setPrintAdvMk("Y");
+            // 產生外匯編號
+            irMaster.setIrNo(commonFeignClient.getFxNo("S", "IR", "093"));
+            // 新增主檔
+            irMasterRepository.save(irMaster);
 
-			// update IRCaseEntity PROCESS_STATUS = 3 ：放行訖
-			irCaseEntity.setProcessStatus("3");
-			irCaseRepository.save(irCaseEntity);
+            // update IRCaseEntity PROCESS_STATUS = 3 ：放行訖
+            irCaseEntity.setProcessStatus("3");
+            irCaseRepository.save(irCaseEntity);
 
-			// 自動將entity的屬性，對應到dto裡
-			BeanUtils.copyProperties(irMaster, irDto);
-		} else {
-			// 查無此電文
-			new Exception("S001");
-		}
-		return irDto;
-	}
+            // 自動將entity的屬性，對應到dto裡
+            BeanUtils.copyProperties(irMaster, irDto);
+        } else {
+            // 查無此電文
+            new Exception("S001");
+        }
+        return irDto;
+    }
 
 }

@@ -45,38 +45,38 @@ public class IRCaseEntity {
     @Column(name = "CREDIT_MK")
     String creditMK;
     //受通知單位
-    @Column(name = "BE_ADV_BRANCH",length = 3)
+    @Column(name = "BE_ADV_BRANCH", length = 3)
     String beAdvBranch;
     //顧客統編
     @Column(name = "CUSTOMER_ID")
     String customerId;
 
-    @Column(name = "SENDER_SWIFT_CODE",length = 11)
+    @Column(name = "SENDER_SWIFT_CODE", length = 11)
     String senderSwiftCode;
 
     @Column(name = "REFERENCE_NO")
     String referenceNo;
 
-    @Column(name = "CURRENCY",length = 3)
+    @Column(name = "CURRENCY", length = 3)
     String currency;
 
     @Column(name = "AMOUNT")
     BigDecimal irAmount;
 
     //電文是否可自動放行記號
-    @Column(name = "AUTO_PASS_MK",length = 1)
+    @Column(name = "AUTO_PASS_MK", length = 1)
     String autoPassMk;
 
-    @Column(name = "VALUE_DATE",length = 12)
+    @Column(name = "VALUE_DATE", length = 12)
     @DateTimeFormat(pattern = "yyyyMMdd")
     LocalDate valueDate;
 
-    @Column(name = "RECEIVE_DATE",length = 12)
+    @Column(name = "RECEIVE_DATE", length = 12)
     @DateTimeFormat(pattern = "yyyyMMdd")
-    @Schema(description = "收件日做自動/單筆查詢印表時之日期" )
+    @Schema(description = "收件日做自動/單筆查詢印表時之日期")
     LocalDate receiveDate;
 
-    @Schema(description = "處理時間" )
+    @Schema(description = "處理時間")
     @Column(name = "TX_TIME")
     String txTime;
 
@@ -115,21 +115,21 @@ public class IRCaseEntity {
     @Column(name = "CHARGE_FEE_AMOUNT3")
     BigDecimal chargeFeeAmount3;
 
-    @Schema(description = "匯款行一" )
+    @Schema(description = "匯款行一")
     String remitBankInfo1;
 
-    @Schema(description = "匯款行二" )
+    @Schema(description = "匯款行二")
     String remitBankInfo2;
 
-    @Schema(description = "匯款行三" )
+    @Schema(description = "匯款行三")
     String remitBankInfo3;
 
-    @Schema(description = "匯款行四" )
+    @Schema(description = "匯款行四")
     String remitBankInfo4;
 
-    @Schema(description = "存匯行 SWIFT-TID" )
+    @Schema(description = "存匯行 SWIFT-TID")
     String depositBank;
 
-    @Schema(description = "同存記號" )
+    @Schema(description = "同存記號")
     String nstVstMk;
 }

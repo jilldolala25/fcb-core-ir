@@ -65,12 +65,12 @@ public class IRCaseDto {
     String autoPassMk;
 
     @NotNull(message = "ValueDate不可為空白")
-    @Schema(description = "有效日" )
+    @Schema(description = "有效日")
     LocalDate valueDate;
-    @Schema(description = "收件日做自動/單筆查詢印表時之日期" )
+    @Schema(description = "收件日做自動/單筆查詢印表時之日期")
     LocalDate receiveDate;
 
-    @Schema(description = "處理時間" )
+    @Schema(description = "處理時間")
     String txTime;
 
     @Column(name = "SENDER_INFO1")
@@ -109,22 +109,22 @@ public class IRCaseDto {
     BigDecimal chargeFeeAmount3;
 
 
-    @Schema(description = "匯款行一" )
+    @Schema(description = "匯款行一")
     String remitBankInfo1;
 
-    @Schema(description = "匯款行二" )
+    @Schema(description = "匯款行二")
     String remitBankInfo2;
 
-    @Schema(description = "匯款行三" )
+    @Schema(description = "匯款行三")
     String remitBankInfo3;
 
-    @Schema(description = "匯款行四" )
+    @Schema(description = "匯款行四")
     String remitBankInfo4;
 
-    @Size(max = 11, min = 11,message = "存匯行SWIFT-ID輸入錯誤")
-    @Schema(description = "存匯行 SWIFT-TID" )
+    @Size(max = 11, min = 11, message = "存匯行SWIFT-ID輸入錯誤")
+    @Schema(description = "存匯行 SWIFT-TID")
     String depositBank;
-    @Schema(description = "同存記號" )
+    @Schema(description = "同存記號")
     String nstVstMk;
 
 }
