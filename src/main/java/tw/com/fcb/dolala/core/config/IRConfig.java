@@ -24,5 +24,4 @@ public class IRConfig {
     String envType;
 
 
-
 }
