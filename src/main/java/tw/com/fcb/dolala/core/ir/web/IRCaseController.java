@@ -51,7 +51,7 @@ public class IRCaseController {
         try {
 //			IRCaseDto irCaseDto = new IRCaseDto();
 //			BeanUtils.copyProperties(message, irCaseDto);
-            IRCaseDto irCaseDto = dtoMapper.toIRCaseDto(message);
+            IRCaseDto irCaseDto = dtoMapper.cmdToIRCaseDto(message);
             //insert，將電文資料新增至IRCase檔案
             insertIRCaseResult = irCaseService.irCaseInsert(irCaseDto);
 
