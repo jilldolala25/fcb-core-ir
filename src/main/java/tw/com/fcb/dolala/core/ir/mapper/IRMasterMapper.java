@@ -5,7 +5,8 @@ import tw.com.fcb.dolala.core.ir.web.cmd.IRSaveCmd;
 import tw.com.fcb.dolala.core.ir.web.dto.IRAdvicePrintListDto;
 import tw.com.fcb.dolala.core.ir.web.dto.IRCaseDto;
 import tw.com.fcb.dolala.core.ir.web.dto.IRDto;
-
+import org.mapstruct.Mapper;
+@Mapper
 public interface IRMasterMapper {
 
     IRDto irMasterToIRDto (IRMaster irMaster);
