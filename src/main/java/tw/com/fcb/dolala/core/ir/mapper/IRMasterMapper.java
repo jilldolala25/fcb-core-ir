@@ -9,7 +9,11 @@ import org.mapstruct.Mapper;
 @Mapper
 public interface IRMasterMapper {
 
-    IRDto irMasterToIRDto (IRMaster irMaster);
+    IRMaster irDtoToIRMaster(IRDto irDto);
+
+
+    IRDto irMasterToIRDto(IRMaster irMaster);
+
 
     IRMaster irSaveCmdToIRMaster(IRSaveCmd irSaveCmd);
 

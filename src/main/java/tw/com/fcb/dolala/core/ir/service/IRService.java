@@ -51,7 +51,7 @@ public class IRService {
         IRMaster irMaster = new IRMaster();
 
         // 自動將saveCmd的屬性，對應到entity裡
-        irMasterMapper.irSaveCmdToIRMaster(irSaveCmd);
+       irMaster =  irMasterMapper.irSaveCmdToIRMaster(irSaveCmd);
 //        BeanUtils.copyProperties(irSaveCmd, irMaster);
         irMaster.setExchangeRate(commonFeignClient.isGetFxRate("B", irSaveCmd.getCurrency(), "TWD"));
         //取號
@@ -69,15 +69,15 @@ public class IRService {
     //電文進電，判斷可自動放行，新增至主檔
     public IRDto autoPassInsertIRMaster(IRCaseDto irCaseDto) throws Exception {
         IRSaveCmd irSaveCmd = new IRSaveCmd();
-        irMasterMapper.irCaseDtoToIRSaveCmd(irCaseDto);
+        irSaveCmd = irMasterMapper.irCaseDtoToIRSaveCmd(irCaseDto);
 //        BeanUtils.copyProperties(irCaseDto, irSaveCmd);
         //自動放行新增進irMaster
-        irSaveCmd = this.setIRMaster(irSaveCmd);
+        this.setIRMaster(irSaveCmd);
 
         IRMaster irMaster = this.insertIRMaster(irSaveCmd);
 //		return "電文可自動放行，新增IRMaster成功，編號：" + irMaster.getIrNo();
         IRDto irDto = new IRDto();
-        irMasterMapper.irMasterToIRDto(irMaster);
+        irDto = irMasterMapper.irMasterToIRDto(irMaster);
 //        BeanUtils.copyProperties(irMaster, irDto);
         return irDto;
     }
@@ -152,8 +152,10 @@ public class IRService {
 
     public void updateMaster(IRDto irDto) {
 
-        IRMaster irMaster = new IRMaster();
-        irMasterMapper.irMasterToIRDto(irMaster);
+        IRMaster irMaster = irMasterMapper.irDtoToIRMaster(irDto);
+        if (irMaster.getFxDeposit() == null){
+            new Exception("D001");
+        }
 //        BeanUtils.copyProperties(irDto, irMaster);
         irMasterRepository.save(irMaster);
 
@@ -194,7 +196,7 @@ public class IRService {
             irMasterRepository.save(irMaster);
             //add to irDto
             irDto = new IRDto();
-            irMasterMapper.irMasterToIRDto(irMaster);
+            irDto = irMasterMapper.irMasterToIRDto(irMaster);
 //            BeanUtils.copyProperties(irMaster, irDto);
             listDto.add(irDto);
         }
@@ -233,7 +235,7 @@ public class IRService {
         for (int i = 0; i < listData.size(); i++) {
             irAdvicePrintListDto = new IRAdvicePrintListDto();
             irMaster = listData.get(i);
-            irMasterMapper.irMasterToIrAdvicePrintDto(irMaster);
+            irAdvicePrintListDto = irMasterMapper.irMasterToIrAdvicePrintDto(irMaster);
 //            BeanUtils.copyProperties(irMaster, irAdvicePrintListDto);
             i2ListData.add(irAdvicePrintListDto);
         }
@@ -248,7 +250,7 @@ public class IRService {
 
         if (irMaster != null) {
             // 將傳入值對應至irMaster
-            irMasterMapper.irSaveCmdToIRMaster(irSaveCmd);
+            irMaster = irMasterMapper.irSaveCmdToIRMaster(irSaveCmd);
 //            BeanUtils.copyProperties(irSaveCmd, irMaster);
             irMaster.setPaidStats(4); // 4:已解款
             //取得賣匯匯率
@@ -262,7 +264,7 @@ public class IRService {
             // 更新匯入匯款主檔
             irMasterRepository.save(irMaster);
             // 自動將entity的屬性，對應到dto裡
-            irMasterMapper.irMasterToIRDto(irMaster);
+            irDto = irMasterMapper.irMasterToIRDto(irMaster);
 //            BeanUtils.copyProperties(irMaster, irDto);
         }
         return irDto;
@@ -278,7 +280,7 @@ public class IRService {
             // 更新匯入匯款主檔
             irMasterRepository.save(irMaster);
             // 自動將entity的屬性，對應到dto裡
-            irMasterMapper.irMasterToIRDto(irMaster);
+            irDto = irMasterMapper.irMasterToIRDto(irMaster);
 //            BeanUtils.copyProperties(irMaster, irDto);
         }
         return irDto;
@@ -294,7 +296,7 @@ public class IRService {
             // 更新匯入匯款主檔
             irMasterRepository.save(irMaster);
             // 自動將entity的屬性，對應到dto裡
-            irMasterMapper.irMasterToIRDto(irMaster);
+            irDto = irMasterMapper.irMasterToIRDto(irMaster);
 //            BeanUtils.copyProperties(irMaster, irDto);
         }
         return irDto;
@@ -310,7 +312,7 @@ public class IRService {
             // 更新匯入匯款主檔
 //            irMasterRepository.save(irMaster);
             // 自動將entity的屬性，對應到dto裡
-            irMasterMapper.irMasterToIRDto(irMaster);
+            irDto = irMasterMapper.irMasterToIRDto(irMaster);
 //            BeanUtils.copyProperties(irMaster, irDto);
         }
         return irDto;

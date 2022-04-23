@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tw.com.fcb.dolala.core.common.web.CommonFeignClient;
 import tw.com.fcb.dolala.core.common.web.dto.BankDto;
 import tw.com.fcb.dolala.core.common.web.dto.CustomerDto;
+import tw.com.fcb.dolala.core.ir.mapper.IRCaseMapper;
 import tw.com.fcb.dolala.core.ir.repository.IRCaseRepository;
 import tw.com.fcb.dolala.core.ir.repository.IRMasterRepository;
 import tw.com.fcb.dolala.core.ir.repository.entity.IRCaseEntity;
@@ -46,6 +47,9 @@ public class IRCaseService {
     AutoPassCheckService autoPassCheckService;
     @Autowired
     IRService irService;
+    @Autowired
+    IRCaseMapper irCaseMapper;
+
     //取號檔 SystemType,branch
     private final String systemType = "IR_SEQ";
     private final String branch = "999";
@@ -54,12 +58,13 @@ public class IRCaseService {
     public String irCaseInsert(IRCaseDto irCaseDto) throws Exception {
         //beginTx
         String insertIRCaseResult;
-        IRCaseEntity irCaseEntity = new IRCaseEntity();
+//        IRCaseEntity irCaseEntity = new IRCaseEntity();
         //讀取共用服務 set相關欄位
         irCaseDto = this.setIRCaseData(irCaseDto);
 
         // irCastDto，對應到entity裡
-        BeanUtils.copyProperties(irCaseDto, irCaseEntity);
+        IRCaseEntity irCaseEntity = irCaseMapper.irCaseDtoToEntity(irCaseDto);
+//        BeanUtils.copyProperties(irCaseDto, irCaseEntity);
         irCaseRepository.save(irCaseEntity);
 
 // check 期交所案件
@@ -144,7 +149,8 @@ public class IRCaseService {
 
         if (irCaseDto != null) {
             // 自動將entity的屬性，對應到dto裡
-            BeanUtils.copyProperties(irCaseEntity, irCaseDto);
+            irCaseDto = irCaseMapper.irCaseEntityToDto(irCaseEntity);
+//            BeanUtils.copyProperties(irCaseEntity, irCaseDto);
         }
         return irCaseDto;
     }
@@ -173,8 +179,8 @@ public class IRCaseService {
         updateByIRSeqNo(irCaseDto);
 
         //自動放行新增進irMaster並更新為已入帳
-        IRSaveCmd irSaveCmd = new IRSaveCmd();
-        BeanUtils.copyProperties(irCaseDto, irSaveCmd);
+        IRSaveCmd irSaveCmd = irCaseMapper.irCaseDtoToIRSaveCmd(irCaseDto);
+//        BeanUtils.copyProperties(irCaseDto, irSaveCmd);
         irSaveCmd = irService.setIRMaster(irSaveCmd);
         //期交所自動解款，PAID_STATUS = 2
         irSaveCmd.setPaidStats(2);
@@ -185,9 +191,10 @@ public class IRCaseService {
     }
 
     public boolean updateByIRSeqNo(IRCaseDto irCaseDto) throws Exception {
-        IRCaseEntity irCaseEntity = new IRCaseEntity();
+//        IRCaseEntity irCaseEntity = new IRCaseEntity();
 // 將irCaseDto，對應到entity裡
-        BeanUtils.copyProperties(irCaseDto, irCaseEntity);
+        IRCaseEntity irCaseEntity = irCaseMapper.irCaseDtoToEntity(irCaseDto);
+//        BeanUtils.copyProperties(irCaseDto, irCaseEntity);
         irCaseRepository.save(irCaseEntity);
         return true;
     }
@@ -198,7 +205,8 @@ public class IRCaseService {
         IRCaseDto irCaseDto = new IRCaseDto();
         IRCaseEntity irCaseEntity = this.getByIRSeqNoAndProcessStatus(seqNo, "1");
         if (irCaseEntity != null) {
-            BeanUtils.copyProperties(irCaseEntity, irCaseDto);
+            irCaseDto = irCaseMapper.irCaseEntityToDto(irCaseEntity);
+//            BeanUtils.copyProperties(irCaseEntity, irCaseDto);
         }
         return irCaseDto;
     }
@@ -213,7 +221,8 @@ public class IRCaseService {
             irCaseEntity.setProcessStatus("8");
             // 更新電文檔
             irCaseRepository.save(irCaseEntity);
-            BeanUtils.copyProperties(irCaseEntity, irCaseDto);
+            irCaseDto = irCaseMapper.irCaseEntityToDto(irCaseEntity);
+//            BeanUtils.copyProperties(irCaseEntity, irCaseDto);
         } else {
             // 查無此電文
             new Exception("S001");
@@ -231,7 +240,8 @@ public class IRCaseService {
             irCaseEntity.setProcessStatus("1");
             // 更新電文檔
             irCaseRepository.save(irCaseEntity);
-            BeanUtils.copyProperties(irCaseEntity, irCaseDto);
+            irCaseDto = irCaseMapper.irCaseEntityToDto(irCaseEntity);
+//            BeanUtils.copyProperties(irCaseEntity, irCaseDto);
         } else {
             // 查無此電文
             new Exception("S001");
