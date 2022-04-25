@@ -1,5 +1,6 @@
 package tw.com.fcb.dolala.core.ir.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,7 @@ import java.util.List;
  * <author>     <time>       <version>     <desc>
  * 作者姓名       修改時間       版本編號       描述
  */
+@Slf4j
 @Transactional(rollbackFor={RuntimeException.class, Exception.class})
 @Service
 public class IRService {
@@ -133,6 +135,7 @@ public class IRService {
         //外存入帳
             commonFeignClient.updateFpmBalance
                     (irDto.getReceiverAccount(),irDto.getCurrency(),irDto.getIrAmount());
+            log.info("外存入帳");
         try {
             //update irMaster
             irDto.setPaidStats(4);    //4:已解款
@@ -143,6 +146,7 @@ public class IRService {
                     (irDto.getReceiverAccount(),
                      irDto.getCurrency(),
                      irDto.getIrAmount().multiply(new BigDecimal("-1")));
+            log.info("外存入帳回沖");
         }
 
         }
