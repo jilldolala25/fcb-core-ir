@@ -157,7 +157,7 @@ public class IRService {
     public void updateMaster(IRDto irDto) {
 
         IRMaster irMaster = irMasterMapper.irDtoToIRMaster(irDto);
-        if (irMaster.getFxDeposit() == null){
+        if (irMaster == null){
             new Exception("D001");
         }
 //        BeanUtils.copyProperties(irDto, irMaster);
