@@ -96,7 +96,7 @@ public class IRController {
         Response<IRDto> response = new Response<IRDto>();
         try {
             response.Success();
-            response.setData(irService.findOne(irNo));
+            response.setData(irService.findByIrNoAndPaidStats(irNo));
             log.info("呼叫查詢匯入匯款編號案件API：查詢irNo編號-AFTER" + irNo);
         } catch (Exception e) {
             response.Error(e.getMessage(), commonFeignClient.getErrorMessage(e.getMessage()));

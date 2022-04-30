@@ -33,7 +33,7 @@ import java.util.List;
  * 作者姓名       修改時間       版本編號       描述
  */
 @Slf4j
-@Transactional(rollbackFor={RuntimeException.class, Exception.class})
+@Transactional(rollbackFor = {RuntimeException.class, Exception.class})
 @Service
 public class IRService {
     @Autowired
@@ -98,14 +98,17 @@ public class IRService {
     }
 
     //傳入匯入匯款編號查詢待處理案件
-    public IRDto findOne(String irNo) throws Exception {
+    public IRDto findByIrNoAndPaidStats(String irNo) throws Exception {
 
         IRMaster irMaster = irMasterRepository.findByIrNoAndPaidStats(irNo, 0).orElseThrow(() -> new Exception("S101"));
         IRDto irDto = new IRDto();
 
         if (irMaster != null) {
             // 自動將entity的屬性，對應到dto裡
-            BeanUtils.copyProperties(irMaster, irDto);
+            irDto = irMasterMapper.irMasterToIRDto(irMaster);
+//            BeanUtils.copyProperties(irMaster, irDto);
+        } else {
+            throw new Exception("S109");
         }
         return irDto;
     }
@@ -119,45 +122,50 @@ public class IRService {
 
     //print 列印通知書
     public void print(String irNo) throws Exception {
-        IRDto irDto = this.findOne(irNo);
+        IRDto irDto = this.findByIrNoAndPaidStats(irNo);
 
-        if (!(irDto == null)) {
+        if (irDto != null) {
             irDto.setPrintAdvMk("Y");
             irDto.setPrintAdvDate(LocalDate.now());
             this.updateMaster(irDto);
+        } else {
+            throw new Exception("S108");
         }
     }
 
     //settle 解款
     public void settle(String irNo) throws Exception {
-        IRDto irDto = this.findOne(irNo);
-        if (!(irDto == null)) {
-        //外存入帳
+        IRDto irDto = this.findByIrNoAndPaidStats(irNo);
+        log.debug("{執行settle解款}", irDto);
+        if (irDto != null) {
+            //外存入帳
             commonFeignClient.updateFpmBalance
-                    (irDto.getReceiverAccount(),irDto.getCurrency(),irDto.getIrAmount());
-            log.info("外存入帳");
-        try {
-            //update irMaster
-            irDto.setPaidStats(4);    //4:已解款
-            this.updateMaster(irDto);
-        }catch(Exception e) {
-            //外存補償
-            commonFeignClient.updateFpmBalance
-                    (irDto.getReceiverAccount(),
-                     irDto.getCurrency(),
-                     irDto.getIrAmount().multiply(new BigDecimal("-1")));
-            log.info("外存入帳回沖");
-        }
+                    (irDto.getReceiverAccount(), irDto.getCurrency(), irDto.getIrAmount());
+            log.debug("外存入帳");
+            try {
+                //update irMaster
+                irDto.setPaidStats(4);    //4:已解款
+                this.updateMaster(irDto);
+            } catch (Exception e) {
+                //外存補償
+                commonFeignClient.updateFpmBalance
+                        (irDto.getReceiverAccount(),
+                                irDto.getCurrency(),
+                                irDto.getIrAmount().multiply(new BigDecimal("-1")));
+                log.debug("外存入帳回沖");
 
+
+            }
+        } else {
+            throw new Exception("S107");
         }
     }
-
 
 
     public void updateMaster(IRDto irDto) {
 
         IRMaster irMaster = irMasterMapper.irDtoToIRMaster(irDto);
-        if (irMaster == null){
+        if (irMaster == null) {
             new Exception("D001");
         }
 //        BeanUtils.copyProperties(irDto, irMaster);
@@ -264,12 +272,27 @@ public class IRService {
             //取得匯款行名稱地址
             irMaster.setRemitBkName1(commonFeignClient.getBank(irMaster.getRemitBank()).getName());
             irMaster.setRemitBkName2(commonFeignClient.getBank(irMaster.getRemitBank()).getAddress());
+            //外存入帳
+            commonFeignClient.updateFpmBalance
+                    (irMaster.getReceiverAccount(), irMaster.getCurrency(), irMaster.getIrAmount());
+            log.debug("外存入帳");
+            try {
+                // 更新匯入匯款主檔
+                irMasterRepository.save(irMaster);
+                // 自動將entity的屬性，對應到dto裡
+                irDto = irMasterMapper.irMasterToIRDto(irMaster);
+                //      BeanUtils.copyProperties(irMaster, irDto);
+            } catch (Exception e) {
+                //外存補償
+                commonFeignClient.updateFpmBalance
+                        (irDto.getReceiverAccount(),
+                                irDto.getCurrency(),
+                                irDto.getIrAmount().multiply(new BigDecimal("-1")));
+                log.debug("外存入帳回沖");
 
-            // 更新匯入匯款主檔
-            irMasterRepository.save(irMaster);
-            // 自動將entity的屬性，對應到dto裡
-            irDto = irMasterMapper.irMasterToIRDto(irMaster);
-//            BeanUtils.copyProperties(irMaster, irDto);
+            }
+        } else {
+            throw new Exception("S107");
         }
         return irDto;
     }
