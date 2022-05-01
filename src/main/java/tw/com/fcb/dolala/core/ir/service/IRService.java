@@ -53,7 +53,7 @@ public class IRService {
         IRMaster irMaster = new IRMaster();
 
         // 自動將saveCmd的屬性，對應到entity裡
-       irMaster =  irMasterMapper.irSaveCmdToIRMaster(irSaveCmd);
+        irMaster = irMasterMapper.irSaveCmdToIRMaster(irSaveCmd);
 //        BeanUtils.copyProperties(irSaveCmd, irMaster);
         irMaster.setExchangeRate(commonFeignClient.isGetFxRate("B", irSaveCmd.getCurrency(), "TWD"));
         //取號
@@ -258,6 +258,10 @@ public class IRService {
     // S211A 執行原幣解款資料新增
     public IRDto exeRelaseIRMaster(IRSaveCmd irSaveCmd) throws Exception {
         IRMaster irMaster = irMasterRepository.findByIrNoAndPaidStats(irSaveCmd.getIrNo(), 0).orElseThrow(() -> new Exception("S101"));
+        log.debug("PaidStats" + irMaster.getIrNo() + "," + irMaster.getPaidStats());
+        if (irMaster.getPaidStats().equals(4)) {
+            throw new Exception("S102");
+        }
         IRDto irDto = new IRDto();
 
         if (irMaster != null) {
@@ -279,16 +283,19 @@ public class IRService {
             try {
                 // 更新匯入匯款主檔
                 irMasterRepository.save(irMaster);
+//                throw new Exception("D001");
+                log.debug("主檔更新失敗，須執行外存補償");
                 // 自動將entity的屬性，對應到dto裡
                 irDto = irMasterMapper.irMasterToIRDto(irMaster);
                 //      BeanUtils.copyProperties(irMaster, irDto);
             } catch (Exception e) {
                 //外存補償
+                log.debug("執行外存補償");
                 commonFeignClient.updateFpmBalance
                         (irDto.getReceiverAccount(),
                                 irDto.getCurrency(),
                                 irDto.getIrAmount().multiply(new BigDecimal("-1")));
-                log.debug("外存入帳回沖");
+                log.debug("外存補償完成，外存帳務回沖");
 
             }
         } else {
