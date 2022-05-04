@@ -11,7 +11,6 @@ import tw.com.fcb.dolala.core.common.http.Response;
 import tw.com.fcb.dolala.core.common.web.CommonFeignClient;
 import tw.com.fcb.dolala.core.ir.service.AutoPassCheckService;
 import tw.com.fcb.dolala.core.ir.service.IRCaseService;
-import tw.com.fcb.dolala.core.ir.service.IRService;
 import tw.com.fcb.dolala.core.ir.web.cmd.SwiftMessageSaveCmd;
 import tw.com.fcb.dolala.core.ir.web.dto.IRCaseDto;
 import tw.com.fcb.dolala.core.ir.web.mapper.IRCaseDtoMapper;
@@ -40,21 +39,15 @@ public class IRCaseController {
     @Autowired
     IRCaseDtoMapper dtoMapper;
 
-    @Autowired
-    IRService irService;
-
     @PostMapping("/ircase/receive-swift")
     @Operation(description = "接收 SWIFT 電文並存到 SwiftMessage", summary = "接收及儲存 SWIFT 電文")
     public Response<String> receiveSwift(@Validated @RequestBody SwiftMessageSaveCmd message) {
         Response<String> response = new Response();
         String insertIRCaseResult;
         try {
-//			IRCaseDto irCaseDto = new IRCaseDto();
-//			BeanUtils.copyProperties(message, irCaseDto);
             IRCaseDto irCaseDto = dtoMapper.cmdToIRCaseDto(message);
             //insert，將電文資料新增至IRCase檔案
             insertIRCaseResult = irCaseService.irCaseInsert(irCaseDto);
-
             response.Success();
             response.setData(insertIRCaseResult);
             log.info("呼叫接收 SWIFT 電文 API：接收及儲存一筆 SWIFT 電文");
